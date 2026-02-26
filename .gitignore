@@ -1,5 +1,6 @@
 # Python-generated files
 __pycache__/
+.pytest_cache/
 *.py[oc]
 build/
 dist/
@@ -11,3 +12,6 @@ wheels/
 
 # 3rd-party deps
 third_party/*
+
+# agent skills
+.agents/
