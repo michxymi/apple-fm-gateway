@@ -6,7 +6,16 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "apple-fm-sdk",
+    "fastapi[standard]>=0.133.1",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.uv.workspace]
 members = [
@@ -15,4 +24,3 @@ members = [
 
 [tool.uv.sources]
 apple-fm-sdk = { workspace = true }
-
