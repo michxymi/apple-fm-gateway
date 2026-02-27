@@ -145,7 +145,7 @@ curl -s http://127.0.0.1:8000/v1/messages/count_tokens \
 | Tool/function calling | Not supported | Accepted/ignored for OpenAI; unsupported for Anthropic blocks |
 
 ## Limitations / Caveats (V1)
-- Foundation Models SDK for Python doesn't have a PyPI packages as of yet so we are using submodules.
+- Foundation Models SDK for Python doesn't have a PyPI package as of yet, so we are using submodules.
 - Apple Foundation Models have a small context window (4096 tokens).
 - Command line tools get rate limited in MacOS, [source](https://developer.apple.com/forums/thread/787737)
 - Anthropic content blocks are text-only (`type="text"`).

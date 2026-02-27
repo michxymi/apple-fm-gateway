@@ -1,7 +1,7 @@
 [project]
 name = "apple-fm-gateway"
 version = "0.1.0"
-description = "Add your description here"
+description = "API compatibility layer for Apple's on-device Foundation Models"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
