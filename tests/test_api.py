@@ -185,7 +185,10 @@ def test_chat_completion_usage_counts_text_only_prompt_content(
                 "role": "user",
                 "content": [
                     {"type": "text", "text": "Hi"},
-                    {"type": "image_url", "image_url": {"url": "https://example.test/img"}},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": "https://example.test/img"},
+                    },
                 ],
             },
             {"role": "assistant", "content": "Ack"},

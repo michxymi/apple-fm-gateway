@@ -10,7 +10,12 @@ from app.core.token_estimation import estimate_tokens
 from app.core.types import CANONICAL_MODEL_ID, NormalizedGenerationRequest
 
 from .errors import AnthropicCompatError, map_anthropic_error
-from .schemas import CountTokensRequest, MessageContentBlock, MessagesMessage, MessagesRequest
+from .schemas import (
+    CountTokensRequest,
+    MessageContentBlock,
+    MessagesMessage,
+    MessagesRequest,
+)
 
 _MODEL_ALIASES = {
     "sonnet": CANONICAL_MODEL_ID,
@@ -203,9 +208,7 @@ def _resolve_model(model: str) -> tuple[str, list[str]]:
         resolved = _MODEL_ALIASES[model]
         warnings: list[str] = []
         if model != resolved:
-            warnings.append(
-                f"Mapped model '{model}' to backend model '{resolved}'."
-            )
+            warnings.append(f"Mapped model '{model}' to backend model '{resolved}'.")
         return resolved, warnings
 
     if model.startswith("claude-"):
@@ -245,7 +248,9 @@ def _flatten_messages(messages: list[MessagesMessage]) -> str:
     dialogue_lines: list[str] = []
 
     for index, message in enumerate(messages):
-        text = _extract_content_text(message.content, field_name=f"messages[{index}].content")
+        text = _extract_content_text(
+            message.content, field_name=f"messages[{index}].content"
+        )
         label = "User" if message.role == "user" else "Assistant"
         dialogue_lines.append(f"{label}: {text}" if text else f"{label}:")
 

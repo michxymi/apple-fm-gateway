@@ -125,7 +125,9 @@ def test_count_tokens_returns_deterministic_value(client: TestClient):
     assert body["input_tokens"] > 0
 
 
-def test_model_alias_and_claude_prefix_mapping(client: TestClient, patch_anthropic_generation):
+def test_model_alias_and_claude_prefix_mapping(
+    client: TestClient, patch_anthropic_generation
+):
     payload = {
         "model": "claude-3-5-sonnet-latest",
         "messages": [{"role": "user", "content": [{"type": "text", "text": "Hi"}]}],
@@ -172,7 +174,9 @@ def test_unsupported_content_block_returns_400(client: TestClient):
     assert "Only 'text' blocks" in body["error"]["message"]
 
 
-def test_system_block_array_is_supported(client: TestClient, patch_anthropic_generation):
+def test_system_block_array_is_supported(
+    client: TestClient, patch_anthropic_generation
+):
     payload = {
         "model": "opus",
         "system": [

@@ -46,7 +46,9 @@ def warning_headers(warnings: list[str]) -> dict[str, str]:
 
 def prepare_chat_request(request: ChatCompletionRequest) -> PreparedChatRequest:
     _validate_model(request.model)
-    instructions, prompt, prompt_tokens, message_warnings = _flatten_messages(request.messages)
+    instructions, prompt, prompt_tokens, message_warnings = _flatten_messages(
+        request.messages
+    )
     json_schema = _extract_json_schema(request)
 
     if request.stream and json_schema is not None:
@@ -304,7 +306,12 @@ def _flatten_messages(
     )
 
     merged_instructions = "\n\n".join(instructions) if instructions else None
-    return merged_instructions, prompt, estimate_tokens("\n".join(prompt_token_parts)), warnings
+    return (
+        merged_instructions,
+        prompt,
+        estimate_tokens("\n".join(prompt_token_parts)),
+        warnings,
+    )
 
 
 def _extract_text_content(
@@ -334,9 +341,7 @@ def _extract_text_content(
             ignored_non_text = True
 
     if ignored_non_text:
-        warnings.append(
-            f"Ignored non-text content parts in messages[{message_index}]."
-        )
+        warnings.append(f"Ignored non-text content parts in messages[{message_index}].")
 
     return "".join(parts).strip(), warnings
 
