@@ -27,12 +27,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.10"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+
+      - name: Ensure apple-fm-sdk workspace source exists
+        run: |
+          if [ ! -d third_party/python-apple-fm-sdk ]; then
+            mkdir -p third_party
+            git clone --depth=1 https://github.com/apple/python-apple-fm-sdk third_party/python-apple-fm-sdk
+          fi
 
       - name: Install dependencies
         run: uv sync --dev --frozen
@@ -57,12 +64,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.10"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+
+      - name: Ensure apple-fm-sdk workspace source exists
+        run: |
+          if [ ! -d third_party/python-apple-fm-sdk ]; then
+            mkdir -p third_party
+            git clone --depth=1 https://github.com/apple/python-apple-fm-sdk third_party/python-apple-fm-sdk
+          fi
 
       - name: Install dependencies
         run: uv sync --dev --frozen
@@ -84,12 +98,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.10"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+
+      - name: Ensure apple-fm-sdk workspace source exists
+        run: |
+          if [ ! -d third_party/python-apple-fm-sdk ]; then
+            mkdir -p third_party
+            git clone --depth=1 https://github.com/apple/python-apple-fm-sdk third_party/python-apple-fm-sdk
+          fi
 
       - name: Install dependencies
         run: uv sync --dev --frozen

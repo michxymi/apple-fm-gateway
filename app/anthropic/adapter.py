@@ -254,10 +254,11 @@ def _flatten_messages(messages: list[MessagesMessage]) -> str:
         label = "User" if message.role == "user" else "Assistant"
         dialogue_lines.append(f"{label}: {text}" if text else f"{label}:")
 
+    dialogue = "\n".join(dialogue_lines)
     prompt = (
         "Use the following conversation history to produce the next assistant message.\n\n"
         "Conversation:\n"
-        f"{'\n'.join(dialogue_lines)}\n\n"
+        f"{dialogue}\n\n"
         "Assistant:"
     )
     return prompt

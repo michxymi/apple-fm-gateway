@@ -7,7 +7,7 @@ FastAPI gateway that exposes Apple's on-device Foundation Model (`apple_fm_sdk`)
 ## Requirements
 
 - See [Foundation Models SDK for Python](https://github.com/apple/python-apple-fm-sdk/blob/main/README.md#requirements)
-- Python `>=3.13`
+- Python `>=3.10`
 - [`uv`](https://docs.astral.sh/uv/) installed
 
 ## Installation

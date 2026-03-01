@@ -298,10 +298,11 @@ def _flatten_messages(
             param="messages",
         )
 
+    dialogue = "\n".join(dialogue_lines)
     prompt = (
         "Use the following conversation history to produce the next assistant message.\n\n"
         "Conversation:\n"
-        f"{'\n'.join(dialogue_lines)}\n\n"
+        f"{dialogue}\n\n"
         "Assistant:"
     )
 

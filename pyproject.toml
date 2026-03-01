@@ -3,7 +3,7 @@ name = "apple-fm-gateway"
 version = "0.1.0"
 description = "API compatibility layer for Apple's on-device Foundation Models"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
     "apple-fm-sdk",
     "fastapi[standard]>=0.133.1",
