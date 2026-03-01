@@ -35,13 +35,13 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --dev --frozen --no-install-package apple-fm-sdk
+        run: uv sync --dev --frozen --no-install-project --no-install-package apple-fm-sdk
 
       - name: Run ruff lint
-        run: uv run ruff check .
+        run: uv run --no-project ruff check .
 
       - name: Run ruff format check
-        run: uv run ruff format --check .
+        run: uv run --no-project ruff format --check .
 
   typecheck:
     name: Typecheck (Ty)
@@ -65,10 +65,10 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --dev --frozen --no-install-package apple-fm-sdk
+        run: uv sync --dev --frozen --no-install-project --no-install-package apple-fm-sdk
 
       - name: Run ty
-        run: uv run ty check .
+        run: uv run --no-project ty check .
 
   test:
     name: Test (Pytest)
@@ -92,7 +92,7 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --dev --frozen --no-install-package apple-fm-sdk
+        run: uv sync --dev --frozen --no-install-project --no-install-package apple-fm-sdk
 
       - name: Run tests
-        run: uv run pytest -q
+        run: uv run --no-project pytest -q
