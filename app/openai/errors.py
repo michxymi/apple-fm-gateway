@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import importlib
+import importlib.util
 from dataclasses import dataclass
 from typing import Any
 
-import apple_fm_sdk as fm
-
 from app.core.errors import GatewayError
+
+fm: Any = None
+if importlib.util.find_spec("apple_fm_sdk") is not None:
+    fm = importlib.import_module("apple_fm_sdk")
+HAS_APPLE_FM_SDK = fm is not None
 
 
 @dataclass
@@ -49,7 +54,7 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             param=exc.param,
         )
 
-    if isinstance(exc, fm.ExceededContextWindowSizeError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.ExceededContextWindowSizeError):
         return OpenAICompatError(
             status_code=400,
             message=str(exc),
@@ -57,7 +62,7 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             code="context_length_exceeded",
         )
 
-    if isinstance(exc, fm.InvalidGenerationSchemaError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.InvalidGenerationSchemaError):
         return OpenAICompatError(
             status_code=400,
             message=str(exc),
@@ -66,7 +71,9 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             param="response_format",
         )
 
-    if isinstance(exc, (fm.UnsupportedGuideError, fm.UnsupportedLanguageOrLocaleError)):
+    if HAS_APPLE_FM_SDK and isinstance(
+        exc, (fm.UnsupportedGuideError, fm.UnsupportedLanguageOrLocaleError)
+    ):
         return OpenAICompatError(
             status_code=400,
             message=str(exc),
@@ -74,7 +81,9 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             code="unsupported_parameter",
         )
 
-    if isinstance(exc, (fm.GuardrailViolationError, fm.RefusalError)):
+    if HAS_APPLE_FM_SDK and isinstance(
+        exc, (fm.GuardrailViolationError, fm.RefusalError)
+    ):
         return OpenAICompatError(
             status_code=400,
             message=str(exc),
@@ -82,7 +91,9 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             code="content_policy_violation",
         )
 
-    if isinstance(exc, (fm.RateLimitedError, fm.ConcurrentRequestsError)):
+    if HAS_APPLE_FM_SDK and isinstance(
+        exc, (fm.RateLimitedError, fm.ConcurrentRequestsError)
+    ):
         return OpenAICompatError(
             status_code=429,
             message=str(exc),
@@ -90,7 +101,7 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             code="rate_limited",
         )
 
-    if isinstance(exc, fm.AssetsUnavailableError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.AssetsUnavailableError):
         return OpenAICompatError(
             status_code=503,
             message=str(exc),
@@ -98,7 +109,7 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             code="assets_unavailable",
         )
 
-    if isinstance(exc, fm.DecodingFailureError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.DecodingFailureError):
         return OpenAICompatError(
             status_code=500,
             message=str(exc),
@@ -106,7 +117,7 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             code="decoding_failure",
         )
 
-    if isinstance(exc, fm.GenerationError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.GenerationError):
         return OpenAICompatError(
             status_code=500,
             message=str(exc),
@@ -114,7 +125,7 @@ def map_apple_fm_error(exc: Exception) -> OpenAICompatError:
             code="generation_error",
         )
 
-    if isinstance(exc, fm.FoundationModelsError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.FoundationModelsError):
         return OpenAICompatError(
             status_code=500,
             message=str(exc),

@@ -1,11 +1,19 @@
 from __future__ import annotations
 
-from typing import AsyncIterator
-
-import apple_fm_sdk as fm
+import importlib
+import importlib.util
+from typing import TYPE_CHECKING, Any, AsyncIterator
 
 from .errors import GatewayError
 from .types import CANONICAL_MODEL_ID, NormalizedGenerationRequest
+
+if TYPE_CHECKING:
+    import apple_fm_sdk as fm_types
+
+fm: Any = None
+if importlib.util.find_spec("apple_fm_sdk") is not None:
+    fm = importlib.import_module("apple_fm_sdk")
+HAS_APPLE_FM_SDK = fm is not None
 
 
 async def generate_response_text(request: NormalizedGenerationRequest) -> str:
@@ -65,7 +73,16 @@ def _validate_request(request: NormalizedGenerationRequest) -> None:
         )
 
 
-def _create_session(request: NormalizedGenerationRequest) -> fm.LanguageModelSession:
+def _create_session(
+    request: NormalizedGenerationRequest,
+) -> "fm_types.LanguageModelSession":
+    if not HAS_APPLE_FM_SDK:
+        raise GatewayError(
+            status_code=503,
+            message=("Foundation model SDK is not installed in this environment."),
+            code="model_unavailable",
+        )
+
     model = fm.SystemLanguageModel()
     is_available, reason = model.is_available()
 

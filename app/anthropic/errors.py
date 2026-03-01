@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import importlib
+import importlib.util
 from dataclasses import dataclass
 from typing import Any
 
-import apple_fm_sdk as fm
-
 from app.core.errors import GatewayError
+
+fm: Any = None
+if importlib.util.find_spec("apple_fm_sdk") is not None:
+    fm = importlib.import_module("apple_fm_sdk")
+HAS_APPLE_FM_SDK = fm is not None
 
 
 @dataclass
@@ -42,22 +47,30 @@ def map_anthropic_error(exc: Exception) -> AnthropicCompatError:
             error_type=error_type,
         )
 
-    if isinstance(exc, fm.ExceededContextWindowSizeError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.ExceededContextWindowSizeError):
         return AnthropicCompatError(400, str(exc), "invalid_request_error")
 
-    if isinstance(exc, (fm.InvalidGenerationSchemaError, fm.UnsupportedGuideError)):
+    if HAS_APPLE_FM_SDK and isinstance(
+        exc, (fm.InvalidGenerationSchemaError, fm.UnsupportedGuideError)
+    ):
         return AnthropicCompatError(400, str(exc), "invalid_request_error")
 
-    if isinstance(exc, (fm.GuardrailViolationError, fm.RefusalError)):
+    if HAS_APPLE_FM_SDK and isinstance(
+        exc, (fm.GuardrailViolationError, fm.RefusalError)
+    ):
         return AnthropicCompatError(400, str(exc), "invalid_request_error")
 
-    if isinstance(exc, (fm.RateLimitedError, fm.ConcurrentRequestsError)):
+    if HAS_APPLE_FM_SDK and isinstance(
+        exc, (fm.RateLimitedError, fm.ConcurrentRequestsError)
+    ):
         return AnthropicCompatError(429, str(exc), "rate_limit_error")
 
-    if isinstance(exc, fm.AssetsUnavailableError):
+    if HAS_APPLE_FM_SDK and isinstance(exc, fm.AssetsUnavailableError):
         return AnthropicCompatError(503, str(exc), "api_error")
 
-    if isinstance(exc, (fm.GenerationError, fm.FoundationModelsError)):
+    if HAS_APPLE_FM_SDK and isinstance(
+        exc, (fm.GenerationError, fm.FoundationModelsError)
+    ):
         return AnthropicCompatError(500, str(exc), "api_error")
 
     return AnthropicCompatError(500, f"Unexpected server error: {exc}", "api_error")
