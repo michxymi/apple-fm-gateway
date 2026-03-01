@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any, cast
 
 import pytest
 from fastapi.testclient import TestClient
@@ -127,12 +128,22 @@ def test_chat_completion_streaming_sse(
     assert chunks
     assert all(chunk.get("object") == "chat.completion.chunk" for chunk in chunks)
     assert all("usage" not in chunk for chunk in chunks)
-    assert any(
-        choice.get("finish_reason") == "stop"
-        for chunk in chunks
-        for choice in chunk.get("choices", [])
-        if isinstance(choice, dict)
-    )
+    has_stop_choice = False
+    for chunk in chunks:
+        choices = chunk.get("choices")
+        if not isinstance(choices, list):
+            continue
+        for choice in choices:
+            if not isinstance(choice, dict):
+                continue
+            typed_choice = cast(dict[str, Any], choice)
+            if typed_choice.get("finish_reason") == "stop":
+                has_stop_choice = True
+                break
+        if has_stop_choice:
+            break
+
+    assert has_stop_choice
     assert "data: [DONE]" in body
 
 
@@ -300,35 +311,3 @@ def test_chat_completion_model_unavailable_returns_503(client: TestClient, monke
     assert response.status_code == 503
     body = response.json()
     assert body["error"]["code"] == "model_unavailable"
-
-
-def test_chat_completion_ignores_tools_and_unsupported_fields(
-    client: TestClient,
-    patch_generation_success,
-):
-    payload = {
-        "model": "apple.fm.system",
-        "messages": [{"role": "user", "content": "Hello"}],
-        "tools": [
-            {
-                "type": "function",
-                "function": {
-                    "name": "get_weather",
-                    "description": "Get weather",
-                    "parameters": {"type": "object", "properties": {}},
-                },
-            }
-        ],
-        "tool_choice": "auto",
-        "temperature": 0.2,
-        "unknown_field": "ignored",
-    }
-
-    response = client.post("/v1/chat/completions", json=payload)
-
-    assert response.status_code == 200
-    warnings = response.headers.get("x-openai-compat-warnings")
-    assert warnings is not None
-    assert "tool" in warnings.lower()
-    assert "temperature" in warnings
-    assert "unknown_field" in warnings

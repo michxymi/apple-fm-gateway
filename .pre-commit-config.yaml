@@ -21,5 +21,6 @@ repos:
   hooks:
     - id: ty
       name: ty check
-      entry: ty check .
-      language: python
+      entry: uv run ty check .
+      language: system
+      pass_filenames: false
